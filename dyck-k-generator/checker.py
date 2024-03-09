@@ -4,10 +4,12 @@ def is_dyck_word(query: str, k: int) -> bool:
     """
     Check if a word is a member of the Dyck language of order k.
 
-    @param query: The word to check.
-    @param k: The order of the Dyck language.
+    Args:
+        query (str): The word to check.
+        k (int): The order of the Dyck language.
 
-    @return: True if the word is a member of the Dyck language of order k, False otherwise.
+    Returns:
+        bool: True if the word is a member of the Dyck language of order k, False otherwise.
     """
 
     if len(query) % 2 != 0:
