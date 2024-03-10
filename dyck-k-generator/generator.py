@@ -1,3 +1,4 @@
+import click
 import random
 import json
 from tqdm import tqdm
@@ -77,7 +78,13 @@ def _generate_samples(n: int, k: int, max_length: int = 1024, balanced: float = 
     return samples
     
 
-def generate_dataset(n: int, k: int, max_length: int = 1024, balanced: float = 0.5, path: str = None) -> List[Dict[str, bool]]|None:
+@click.command()
+@click.option('--n', type=int, default=500_000, help='The number of strings to generate.')
+@click.option('--k', type=int, default=3, help='The order of the Dyck language.')
+@click.option('--max_length', type=int, default=1024, help='The maximum length of the strings to generate.')
+@click.option('--balanced', type=float, default=0.5, help='The proportion of balanced strings to generate.')
+@click.option('--file', type=bool, default=True, help='If True, the dataset will be saved to a file, otherwise it will be returned to a variable.')
+def generate_dataset(n: int, k: int, max_length: int = 1024, balanced: float = 0.5, file: bool = True) -> List[Dict[str, bool]]|None:
     """
     Generate a list of 'n' strings of length at most 'max_length' from the Dyck language of order 'k'.
     These strings may or may not be members of the Dyck language of order 'k'.
@@ -100,7 +107,8 @@ def generate_dataset(n: int, k: int, max_length: int = 1024, balanced: float = 0
     strings = _generate_samples(n, k, max_length, balanced)
     dataset = [{'string': s, 'class': is_dyck_word(s, k)} for s in strings]
 
-    if path:
+    if file:
+        path = f"data/dyck-{k}_{n}-samples_{max_length}-len_p{str(balanced).replace('.', '')}.jsonl"
         with open(path, 'w') as f:
             for sample in tqdm(dataset, desc=f'Saving dataset to {path}'):
                 json_record = json.dumps(sample)
@@ -109,4 +117,5 @@ def generate_dataset(n: int, k: int, max_length: int = 1024, balanced: float = 0
     else:
         return dataset
 
-
+if __name__ == "__main__":
+    generate_dataset()
