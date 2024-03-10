@@ -81,9 +81,9 @@ def _generate_samples(n: int, k: int, max_length: int = 1024, balanced: float = 
 @click.command()
 @click.option('--n', type=int, default=500_000, help='The number of strings to generate.')
 @click.option('--k', type=int, default=3, help='The order of the Dyck language.')
-@click.option('--max_length', type=int, default=1024, help='The maximum length of the strings to generate.')
+@click.option('--max-length', type=int, default=1024, help='The maximum length of the strings to generate.')
 @click.option('--balanced', type=float, default=0.5, help='The proportion of balanced strings to generate.')
-@click.option('--file', type=bool, default=True, help='If True, the dataset will be saved to a file, otherwise it will be returned to a variable.')
+@click.option('--file', is_flag=True, flag_value=True, help='If present, the dataset will be saved to a file, otherwise it will be returned to a variable.')
 def generate_dataset(n: int, k: int, max_length: int = 1024, balanced: float = 0.5, file: bool = True) -> List[Dict[str, bool]]|None:
     """
     Generate a list of 'n' strings of length at most 'max_length' from the Dyck language of order 'k'.
