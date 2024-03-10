@@ -1,5 +1,6 @@
 import random
 import json
+from tqdm import tqdm
 from typing import List, Dict
 from checker import is_dyck_word
 import constants as c
@@ -24,18 +25,11 @@ def _generate_balanced_string(order: int, length: int) -> str:
     first_half = last_half = ''
 
     for _ in range(half_length):
-        bracket_pair = random.choice(brackets)
-        first_half += bracket_pair[0]
-        last_half += bracket_pair[1]
+        selected_brackets = random.choice(brackets)
+        first_half += selected_brackets[0]
+        last_half += selected_brackets[1]
 
-    first_half = list(first_half)
-    random.shuffle(first_half)
-
-    last_half = list(last_half)
-    random.shuffle(last_half)
-
-    balanced_string = first_half + last_half
-    return ''.join(balanced_string)
+    return first_half + last_half[::-1]
 
 
 def _generate_unbalanced_string(order: int, length: int) -> str:
@@ -74,8 +68,8 @@ def _generate_samples(n: int, k: int, max_length: int = 1024, balanced: float = 
     Returns:
         List[str]: A list of 'n' strings of length at most 'max_length' from the Dyck language of order 'k'."""
     
-    balanced_strings = [_generate_balanced_string(k, random.randint(2, max_length)) for _ in range(int(n * balanced))]
-    unbalanced_strings = [_generate_unbalanced_string(k, random.randint(2, max_length)) for _ in range(n - len(balanced_strings))]
+    balanced_strings = [_generate_balanced_string(k, random.randint(2, max_length)) for _ in tqdm(range(int(n * balanced)), desc='Generating balanced strings')]
+    unbalanced_strings = [_generate_unbalanced_string(k, random.randint(2, max_length)) for _ in tqdm(range(n - len(balanced_strings)), desc='Generating unbalanced strings')]
     
     samples = balanced_strings + unbalanced_strings
     random.shuffle(samples)
@@ -108,7 +102,7 @@ def generate_dataset(n: int, k: int, max_length: int = 1024, balanced: float = 0
 
     if path:
         with open(path, 'w') as f:
-            for sample in dataset:
+            for sample in tqdm(dataset, desc=f'Saving dataset to {path}'):
                 json_record = json.dumps(sample)
                 f.write(json_record + '\n')
             print(f'Dataset saved to {path}')
