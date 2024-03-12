@@ -1,4 +1,5 @@
 import click
+from tqdm import tqdm
 import constants as c
 
 
@@ -26,12 +27,13 @@ def is_dyck_word(query: str, k: int, verbose: bool = False) -> bool|None:
 
     stack = []
 
-    for bracket in query:
+    for bracket in tqdm(query, desc="Checking Dyck word", disable=not verbose):
         if bracket in bracket_types:
             stack.append(bracket)
         elif bracket in closing_brackets:
             if not stack or closing_brackets[bracket] != stack.pop():
                 return False
+            
     if verbose:
         print(not stack)
     else:
