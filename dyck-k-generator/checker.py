@@ -1,6 +1,12 @@
+import click
 import constants as c
 
-def is_dyck_word(query: str, k: int) -> bool:
+
+@click.command()
+@click.option("--query", "-q", type=str, help="The word to check.")
+@click.option("--k", "-k", type=int, help="The order of the Dyck language.")
+@click.option("--verbose", "-v", is_flag=True, help="Print the result of the check.")
+def is_dyck_word(query: str, k: int, verbose: bool = False) -> bool|None:
     """
     Check if a word is a member of the Dyck language of order k.
 
@@ -26,11 +32,12 @@ def is_dyck_word(query: str, k: int) -> bool:
         elif bracket in closing_brackets:
             if not stack or closing_brackets[bracket] != stack.pop():
                 return False
-            
-    return not stack
+    if verbose:
+        print(not stack)
+    else:
+        return not stack
 
-
-
-    
+if __name__ == "__main__":
+    is_dyck_word()
 
     
