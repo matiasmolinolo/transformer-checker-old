@@ -1,10 +1,13 @@
-import click
-import random
 import json
+import random
+from typing import Dict, List
+
+import typer
+from typing_extensions import Annotated
+from dyck_k_generator import constants as c
+from dyck_k_generator import checker
 from tqdm import tqdm
-from typing import List, Dict
-from checker import is_dyck_word
-import constants as c
+
 
 def _generate_balanced_string(order: int, length: int) -> str:
     """
@@ -78,13 +81,15 @@ def _generate_samples(n: int, k: int, max_length: int = 1024, balanced: float = 
     return samples
     
 
-@click.command()
-@click.option('--n', type=int, default=500_000, help='The number of strings to generate.')
-@click.option('--k', type=int, default=3, help='The order of the Dyck language.')
-@click.option('--max-length', type=int, default=1024, help='The maximum length of the strings to generate.')
-@click.option('--balanced', type=float, default=0.5, help='The proportion of balanced strings to generate.')
-@click.option('--file', is_flag=True, flag_value=True, help='If present, the dataset will be saved to a file, otherwise it will be returned to a variable.')
-def generate_dataset(n: int, k: int, max_length: int = 1024, balanced: float = 0.5, file: bool = True) -> List[Dict[str, bool]]|None:
+
+
+def generate_dataset(
+    n: Annotated[int, typer.Option(help="The number of strings to generate.")] = 500_000, 
+    k: Annotated[int, typer.Option(help="The order of the Dyck language.")] = 3,
+    max_length: Annotated[int, typer.Option(help="The maximum length of the strings to generate.")] = 1024, 
+    balanced: Annotated[float, typer.Option(help="The proportion of balanced strings to generate.")] = 0.5, 
+    file: Annotated[bool, typer.Option(help="If present, the dataset will be saved to a file, otherwise it will be returned to a variable.")] = True
+) -> List[Dict[str, bool]]|None:
     """
     Generate a list of 'n' strings of length at most 'max_length' from the Dyck language of order 'k'.
     These strings may or may not be members of the Dyck language of order 'k'.
@@ -105,7 +110,7 @@ def generate_dataset(n: int, k: int, max_length: int = 1024, balanced: float = 0
     """
     
     strings = _generate_samples(n, k, max_length, balanced)
-    dataset = [{'string': s, 'class': is_dyck_word(s, k)} for s in strings]
+    dataset = [{'string': s, 'class': checker.is_dyck_word(s, k)} for s in strings]
 
     if file:
         path = f"data/dyck-{k}_{n}-samples_{max_length}-len_p{str(balanced).replace('.', '')}.jsonl"
@@ -118,4 +123,4 @@ def generate_dataset(n: int, k: int, max_length: int = 1024, balanced: float = 0
         return dataset
 
 if __name__ == "__main__":
-    generate_dataset()
+    typer.run(generate_dataset)

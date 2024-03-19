@@ -1,13 +1,13 @@
-import click
+import typer
+from typing_extensions import Annotated
+from dyck_k_generator import constants as c
 from tqdm import tqdm
-import constants as c
 
 
-@click.command()
-@click.option("--query", "-q", type=str, help="The word to check.")
-@click.option("--k", "-k", type=int, help="The order of the Dyck language.")
-@click.option("--verbose", "-v", is_flag=True, help="Print the result of the check.")
-def is_dyck_word(query: str, k: int, verbose: bool = False) -> bool|None:
+def is_dyck_word(
+        query: Annotated[str, typer.Argument()], 
+        k: Annotated[int, typer.Argument()], 
+        verbose: Annotated[bool, typer.Option()] = False) -> bool|None:
     """
     Check if a word is a member of the Dyck language of order k.
 
