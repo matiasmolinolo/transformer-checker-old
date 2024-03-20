@@ -7,7 +7,8 @@ from tqdm import tqdm
 def is_dyck_word(
         query: Annotated[str, typer.Argument()], 
         k: Annotated[int, typer.Argument()], 
-        verbose: Annotated[bool, typer.Option()] = False) -> bool|None:
+        verbose: Annotated[bool, typer.Option()] = False
+    ) -> bool|None:
     """
     Check if a word is a member of the Dyck language of order k.
 

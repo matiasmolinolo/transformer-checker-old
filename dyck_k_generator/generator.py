@@ -51,7 +51,12 @@ def _generate_unbalanced_string(order: int, length: int) -> str:
     brackets = [(k, v) for k, v in list(c.BRACKETS.items())[:order]]
     brackets = [bracket for pair in brackets for bracket in pair]
 
-    return ''.join(random.choice(brackets) for _ in range(length))
+    unbalanced_str = ''.join(random.choice(brackets) for _ in range(length))
+    
+    if checker.is_dyck_word(unbalanced_str, order):
+        return _generate_unbalanced_string(order, length)
+    
+    return unbalanced_str
 
 
 def _generate_samples(n: int, k: int, max_length: int = 1024, balanced: float = 0.5) -> List[str]:
@@ -75,13 +80,16 @@ def _generate_samples(n: int, k: int, max_length: int = 1024, balanced: float = 
     balanced_strings = [_generate_balanced_string(k, random.randint(2, max_length)) for _ in tqdm(range(int(n * balanced)), desc='Generating balanced strings')]
     unbalanced_strings = [_generate_unbalanced_string(k, random.randint(2, max_length)) for _ in tqdm(range(n - len(balanced_strings)), desc='Generating unbalanced strings')]
     
+    assert len(balanced_strings) + len(unbalanced_strings) == n, "The number of generated strings does not match the expected number."
+    assert all(len(s) <= max_length for s in balanced_strings + unbalanced_strings), "Some strings exceed the maximum length."
+    assert all(checker.is_dyck_word(s, k) for s in balanced_strings), "Some balanced strings are not members of the Dyck language."
+    assert all(not checker.is_dyck_word(s, k) for s in unbalanced_strings), "Some unbalanced strings are members of the Dyck language."
+
     samples = balanced_strings + unbalanced_strings
     random.shuffle(samples)
     
     return samples
     
-
-
 
 def generate_dataset(
     n: Annotated[int, typer.Option(help="The number of strings to generate.")] = 500_000, 
