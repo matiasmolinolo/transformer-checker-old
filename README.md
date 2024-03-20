@@ -6,7 +6,7 @@ This project is a tool to visualize and check neural activations and attention p
 We provide a tool to generate data for training the transformer model. The tool is located in the `dyck-k-generation` directory. To use the tool, run the following command:
 
 ```bash
-python generate_data.py --n n --k k --max_length max_length --balanced balanced --file
+python -m dyck_k_generator.generate_data --n n --k k --max_length max_length --balanced balanced --file
 ```
 
 where `n` is the number of samples, `k` is the Dyck-k language, `max_length` is the maximum length of the strings, `balanced` is a float between 0 and 1 that represents the percentage of balanced strings, and `file` is flag that represents whether to save the data to a file or return it to a variable.
