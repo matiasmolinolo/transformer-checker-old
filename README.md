@@ -1,4 +1,7 @@
 # Transformer Checker
+**IMPORTANTE - REPO DEPRECADO - PARA LA ULTIMA VERSION, VER EL SIGUIENTE REPOSITORIO**
+https://github.com/matiasmolinolo/transformer-checker
+
 
 This project is a tool to visualize and check neural activations and attention patterns in transformer models that classify context-free languages.
 
